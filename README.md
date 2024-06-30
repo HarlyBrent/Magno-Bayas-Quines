@@ -1,5 +1,22 @@
-Members: 
-Harly Brent A. Briones,
-Luzbert Bayas,
-Kim Magno,
-Khely Quines
+import javax.swing.*;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        int boardWidth = 360;
+        int boardHeight = 640;
+    
+
+        JFrame frame = new JFrame("Flappy Man");
+        frame.setVisible(true);
+		frame.setSize(boardWidth, boardHeight);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        FlappyMan flappyMan = new FlappyMan();
+        frame.add(flappyMan);
+        frame.pack();
+        flappyMan.requestFocus();
+        frame.setVisible(true);
+    }
+}
