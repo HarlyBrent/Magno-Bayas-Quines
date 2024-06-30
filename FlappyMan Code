@@ -163,4 +163,49 @@ FlappyMan() {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
+        add(playButton, gbc);
 
+        gbc.gridy++;
+        add(highScoreButton, gbc);
+
+        gbc.gridy++;
+        add(selectionPanel, gbc);
+    }
+
+    void startGame() {
+        isHomePage = false;
+        isGameRunning = true;
+        playButton.setVisible(false);
+        highScoreButton.setVisible(false);
+        selectionPanel.setVisible(false);
+
+        if (supermanButton.isSelected()) {
+            man = new Man(supermanImg);
+        } else if (batmanButton.isSelected()) {
+            man = new Man(batmanImg);
+        } else if (jokermanButton.isSelected()) {
+            man = new Man(jokermanImg);
+        }
+
+        Kryptonites.clear();
+        supermanDied = false;
+        score = 0;
+        placeKryptoniteTimer.start();
+        gameLoop.start();
+    }
+
+    void showHighScore() {
+        Collections.sort(highScores, new Comparator<HighScore>() {
+            @Override
+            public int compare(HighScore o1, HighScore o2) {
+                return Double.compare(o2.score, o1.score);
+            }
+        });
+
+        StringBuilder highScoreMessage = new StringBuilder("High Scores:\n");
+        for (HighScore highScore : highScores) {
+            highScoreMessage.append(highScore.name).append(": ").append((int) highScore.score).append("\n");
+        }
+
+        JOptionPane.showMessageDialog(this, highScoreMessage.toString(), "High Score", JOptionPane.INFORMATION_MESSAGE);
+    }
