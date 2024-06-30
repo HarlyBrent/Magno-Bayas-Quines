@@ -88,4 +88,79 @@ public class FlappyMan extends JPanel implements ActionListener, KeyListener, Mo
     JRadioButton jokermanButton;
     ButtonGroup characterGroup;
     JPanel selectionPanel;
+FlappyMan() {
+        setPreferredSize(new Dimension(boardWidth, boardHeight));
+        setFocusable(true);
+        addKeyListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
+        backgroundImg = new ImageIcon(getClass().getResource("./flappymanbg2.png")).getImage();
+        supermanImg = new ImageIcon(getClass().getResource("./Superman1.png")).getImage();
+        batmanImg = new ImageIcon(getClass().getResource("./Batman.png")).getImage();
+        jokermanImg = new ImageIcon(getClass().getResource("./Joker.png")).getImage();
+        topKryptoniteImg = new ImageIcon(getClass().getResource("./topKryptonite4.png")).getImage();
+        bottomKryptoniteImg = new ImageIcon(getClass().getResource("./bottomKryptonite3.png")).getImage();
+
+        man = new Man(supermanImg);
+        Kryptonites = new ArrayList<>();
+
+        placeKryptoniteTimer = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                placeKryptonite();
+            }
+        });
+
+        gameLoop = new Timer(1000 / 60, this);
+
+        playButton = new JButton("Play");
+        Font buttonFont = playButton.getFont();
+        playButton.setFont(new Font(buttonFont.getName(), Font.BOLD, 20));
+        playButton.setOpaque(false);
+        playButton.setContentAreaFilled(false);
+        playButton.setBorderPainted(false);
+        playButton.setForeground(Color.BLACK);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startGame();
+            }
+        });
+
+        highScoreButton = new JButton("High Score");
+        Font button1Font = highScoreButton.getFont();
+        highScoreButton.setFont(new Font(button1Font.getName(), Font.BOLD, 20));
+        highScoreButton.setOpaque(false);
+        highScoreButton.setContentAreaFilled(false);
+        highScoreButton.setBorderPainted(false);
+        highScoreButton.setForeground(Color.BLACK);
+        highScoreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHighScore();
+            }
+        });
+
+        supermanButton = new JRadioButton("Superman", true);
+        batmanButton = new JRadioButton("Batman");
+        jokermanButton = new JRadioButton("Joker");
+
+        characterGroup = new ButtonGroup();
+        characterGroup.add(supermanButton);
+        characterGroup.add(batmanButton);
+        characterGroup.add(jokermanButton);
+
+        selectionPanel = new JPanel();
+        selectionPanel.add(supermanButton);
+        selectionPanel.add(batmanButton);
+        selectionPanel.add(jokermanButton);
+        selectionPanel.setOpaque(false);
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
 
