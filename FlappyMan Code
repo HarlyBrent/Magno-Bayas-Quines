@@ -88,3 +88,4 @@ public class FlappyMan extends JPanel implements ActionListener, KeyListener, Mo
     JRadioButton jokermanButton;
     ButtonGroup characterGroup;
     JPanel selectionPanel;
+
