@@ -209,3 +209,145 @@ FlappyMan() {
 
         JOptionPane.showMessageDialog(this, highScoreMessage.toString(), "High Score", JOptionPane.INFORMATION_MESSAGE);
     }
+
+void placeKryptonite() {
+        int randomKryptoniteY = (int) (KryptoniteY - KryptoniteHeight / 4 - Math.random() * (KryptoniteHeight / 2));
+        int openingSpace = boardHeight / 3;
+
+        Kryptonite topKryptonite = new Kryptonite(topKryptoniteImg);
+        topKryptonite.y = randomKryptoniteY;
+        Kryptonites.add(topKryptonite);
+
+        Kryptonite bottomKryptonite = new Kryptonite(bottomKryptoniteImg);
+        bottomKryptonite.y = topKryptonite.y + KryptoniteHeight + openingSpace;
+        Kryptonites.add(bottomKryptonite);
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        draw(g);
+    }
+
+    public void draw(Graphics g) {
+        if (isHomePage) {
+            g.fillRect(0, 0, boardWidth, boardHeight);
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("calibri", Font.BOLD, 40));
+            g.drawImage(backgroundImg, 0, 0, this.boardWidth, this.boardHeight, null);
+            g.drawString("Flappy Man", boardWidth / 2 - 90, boardHeight / 3);
+        } else {
+            g.drawImage(backgroundImg, 0, 0, this.boardWidth, this.boardHeight, null);
+            g.drawImage(man.img, man.x, man.y, man.width, man.height, null);
+
+            for (int i = 0; i < Kryptonites.size(); i++) {
+                Kryptonite Kryptonite = Kryptonites.get(i);
+                g.drawImage(Kryptonite.img, Kryptonite.x, Kryptonite.y, Kryptonite.width, Kryptonite.height, null);
+            }
+
+            g.setColor(Color.RED);
+            g.setFont(new Font("Arial", Font.PLAIN, 32));
+            if (supermanDied) {
+                g.drawString("Game Over: " + String.valueOf((int) score), 10, 35);
+            }
+            else {
+                g.drawString(String.valueOf((int) score), 10, 35);
+            }
+        }
+    }
+
+    public void move() {
+        velocityY += gravity;
+        man.y += velocityY;
+        man.y = Math.max(man.y, 0);
+
+        for (int i = 0; i < Kryptonites.size(); i++) {
+            Kryptonite Kryptonite = Kryptonites.get(i);
+            Kryptonite.x += velocityX;
+
+            if (!Kryptonite.passed && man.x > Kryptonite.x + man.width) {
+                score += 0.5;
+                Kryptonite.passed = true;
+            }
+
+            if (collision(man, Kryptonite)) {
+                supermanDied = true;
+            }
+        }
+
+        if (man.y > boardHeight) {
+            supermanDied = true;
+        }
+    }
+
+    boolean collision(Man a, Kryptonite b) {
+        return a.x < b.x + b.width &&
+               a.x + a.width > b.x &&
+               a.y < b.y + b.height &&
+               a.y + a.height > b.y;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (isGameRunning) {
+            move();
+            repaint();
+            if (supermanDied) {
+                placeKryptoniteTimer.stop();
+                gameLoop.stop();
+                isGameRunning = false;
+                String name = JOptionPane.showInputDialog(this, "Enter your name:", "Game Over", JOptionPane.PLAIN_MESSAGE);
+                if (name != null && !name.trim().isEmpty()) {
+                    highScores.add(new HighScore(name, score));
+                }
+                isHomePage = true;
+                playButton.setVisible(true);
+                highScoreButton.setVisible(true);
+                selectionPanel.setVisible(true);
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (isGameRunning && e.getKeyCode() == KeyEvent.VK_SPACE) {
+            velocityY = -9;
+            if (supermanDied) {
+                startGame();
+            }
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (isGameRunning) {
+            velocityY = -9;
+            if (supermanDied) {
+                startGame();
+            }
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void mouseDragged(MouseEvent e) {}
+
+    @Override
+    public void mouseMoved(MouseEvent e) {}
+}
